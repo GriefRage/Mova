@@ -1,0 +1,300 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+  <meta charset="UTF-8">
+  <title>GriefRage Studio — Mova</title>
+  <style>
+    :root {
+      --panel-bg: rgba(0,0,0,0.3);
+      --panel-bg-2: rgba(255,255,255,0.05);
+      --frame: rgba(255,255,255,0.3);
+      --accent: #23f0ff;
+      --accent2: #00aaff;
+      --muted: #bbb;
+      --text: #e7ffff;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      padding: 0;
+      height: 100vh;
+      background: radial-gradient(circle at center, #040a0a 0%, #000 100%);
+      color: var(--text);
+      font-family: 'Segoe UI', sans-serif;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+    }
+
+    /* === Loading Screen === */
+    #loadingScreen {
+      position: absolute;
+      top: 0; left: 0;
+      width: 100%;
+      height: 100%;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      background: radial-gradient(circle at center, #020c0c 0%, #000 100%);
+      transition: opacity 1s ease;
+    }
+
+    h1.logo {
+      font-size: 46px;
+      color: var(--accent);
+      letter-spacing: 3px;
+      text-shadow: 0 0 10px var(--accent), 0 0 20px var(--accent2), 0 0 40px var(--accent);
+      animation: pulse 3s ease-in-out infinite;
+      text-transform: uppercase;
+    }
+
+    @keyframes pulse {
+      0%, 100% { text-shadow: 0 0 15px var(--accent2), 0 0 25px var(--accent); }
+      50% { text-shadow: 0 0 25px var(--accent), 0 0 45px var(--accent2); }
+    }
+
+    h2.sub {
+      color: #7eefff;
+      margin-top: -10px;
+      font-weight: 300;
+      letter-spacing: 1px;
+      text-shadow: 0 0 8px var(--accent);
+    }
+
+    .progress-bar {
+      width: 300px;
+      height: 10px;
+      background: rgba(255,255,255,0.1);
+      border-radius: 10px;
+      margin: 30px auto;
+      overflow: hidden;
+      box-shadow: 0 0 10px rgba(0,255,255,0.3);
+      border: 1px solid rgba(0,255,255,0.3);
+    }
+
+    .progress {
+      width: 0%;
+      height: 100%;
+      background: linear-gradient(90deg, var(--accent2), var(--accent));
+      border-radius: 10px;
+      animation: load 4s linear forwards;
+    }
+
+    @keyframes load {
+      0% { width: 0%; }
+      100% { width: 100%; }
+    }
+
+    .loading-text {
+      margin-top: 10px;
+      color: #9cfaff;
+      font-size: 14px;
+      letter-spacing: 1px;
+      animation: blink 1.5s infinite;
+    }
+
+    @keyframes blink {
+      0%, 100% { opacity: 0.6; }
+      50% { opacity: 1; }
+    }
+
+    /* === Main Interface === */
+    .card {
+      background-color: var(--panel-bg);
+      border: 1px solid var(--frame);
+      padding: 20px;
+      max-width: 400px;
+      margin: 10px auto;
+      border-radius: 10px;
+      box-shadow: 0 0 20px rgba(0,255,255,0.05);
+      text-align: center;
+      display: none;
+      opacity: 0;
+      transition: opacity 1s ease;
+    }
+
+    .card.show {
+      display: block;
+      opacity: 1;
+    }
+
+    h1.page-title {
+      color: #fff;
+      text-shadow: 0 0 5px #4feaf5ff, 0 0 10px #32bbbbff, 0 0 20px #116e8aff;
+      font-size: 28px;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      border-bottom: 2px solid #41ecf8ff;
+      padding-bottom: 10px;
+      margin-bottom: 20px;
+      background: linear-gradient(90deg, #90fff0ff, #70d7ffff);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      animation: glow 2s infinite alternate;
+    }
+
+    @keyframes glow {
+      from { text-shadow: 0 0 10px rgba(100,240,255,0.25); }
+      to   { text-shadow: 0 0 30px rgba(50,180,255,0.35); }
+    }
+
+    input {
+      width: 100%;
+      padding: 10px;
+      margin: 6px 0;
+      border-radius: 6px;
+      border: 1px solid var(--frame);
+      background-color: rgba(255,255,255,0.05);
+      color: var(--text);
+    }
+
+    button {
+      background: linear-gradient(90deg,#2deaf9,#12a9ff);
+      border: none;
+      color: #022;
+      font-weight:700;
+      padding: 10px 18px;
+      border-radius: 10px;
+      cursor: pointer;
+      box-shadow: 0 6px 18px rgba(18,169,255,0.18);
+      transition: transform .12s ease, opacity .12s ease;
+      margin: 6px;
+    }
+
+    button:active {
+      transform: translateY(1px) scale(.995);
+    }
+
+    footer {
+      position: absolute;
+      bottom: 20px;
+      color: rgba(255,255,255,0.4);
+      font-size: 12px;
+      text-align: center;
+      width: 100%;
+      letter-spacing: 1px;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- === Екран завантаження === -->
+  <div id="loadingScreen">
+    <h1 class="logo">GriefRage</h1>
+    <h2 class="sub">STUDIO</h2>
+    <div class="progress-bar"><div class="progress"></div></div>
+    <div class="loading-text" id="loadingText">Завантаження...</div>
+  </div>
+
+  <!-- === Основний екран === -->
+  <section class="card" id="mainMenu">
+    <h1 class="page-title">Mova</h1>
+    <p>Вибери дію нижче:</p>
+    <button onclick="showRegister()">Реєстрація</button>
+    <button onclick="showLogin()">Вхід</button>
+  </section>
+
+  <!-- === Реєстрація === -->
+  <section class="card" id="registerForm">
+    <h1 class="page-title">Реєстрація</h1>
+    <input type="text" id="regNick" placeholder="Нік">
+    <input type="email" id="regEmail" placeholder="Email">
+    <input type="password" id="regPass" placeholder="Пароль">
+    <input type="password" id="regConfirm" placeholder="Підтвердження паролю">
+    <input type="tel" id="regPhone" placeholder="Номер телефону">
+    <button onclick="register()">Зареєструватися</button>
+    <button onclick="backToMenu()">Назад</button>
+  </section>
+
+  <!-- === Вхід === -->
+  <section class="card" id="loginForm">
+    <h1 class="page-title">Вхід</h1>
+    <input type="text" id="logNick" placeholder="Нік">
+    <input type="email" id="logEmail" placeholder="Email">
+    <input type="password" id="logPass" placeholder="Пароль">
+    <input type="tel" id="logPhone" placeholder="Номер телефону">
+    <button onclick="login()">Увійти</button>
+    <button onclick="backToMenu()">Назад</button>
+  </section>
+
+  <footer>
+    &copy; 2025 GriefRage Studio. Всі права захищені.
+  </footer>
+
+<script>
+  // Імітація завантаження
+  setTimeout(() => {
+    document.getElementById("loadingScreen").style.opacity = "0";
+    setTimeout(() => {
+      document.getElementById("loadingScreen").style.display = "none";
+      document.getElementById("mainMenu").classList.add("show");
+    }, 1000);
+  }, 4200);
+
+  // Показ форм
+  function showRegister() {
+    hideAll();
+    document.getElementById("registerForm").classList.add("show");
+  }
+
+  function showLogin() {
+    hideAll();
+    document.getElementById("loginForm").classList.add("show");
+  }
+
+  function backToMenu() {
+    hideAll();
+    document.getElementById("mainMenu").classList.add("show");
+  }
+
+  function hideAll() {
+    document.querySelectorAll(".card").forEach(c => c.classList.remove("show"));
+  }
+
+  // Реєстрація
+  function register() {
+    const nick = regNick.value, email = regEmail.value,
+          pass = regPass.value, confirm = regConfirm.value,
+          phone = regPhone.value;
+    if (!nick || !email || !pass || !confirm || !phone)
+      return alert("Заповніть всі поля!");
+    if (pass !== confirm)
+      return alert("Паролі не співпадають!");
+
+    localStorage.setItem("nick", nick);
+    localStorage.setItem("email", email);
+    localStorage.setItem("password", pass);
+    localStorage.setItem("phone", phone);
+
+    alert("Реєстрація успішна!");
+    // Після реєстрації автоматично на Home.html
+    window.location.href = "Home.html";
+  }
+
+  // Вхід
+  function login() {
+    const nick = logNick.value, email = logEmail.value,
+          pass = logPass.value, phone = logPhone.value;
+    if (
+      nick === localStorage.getItem("nick") &&
+      email === localStorage.getItem("email") &&
+      pass === localStorage.getItem("password") &&
+      phone === localStorage.getItem("phone")
+    ) {
+      alert("Вхід успішний!");
+      // Після входу автоматично на Home.html
+      window.location.href = "Home.html";
+    } else {
+      alert("Дані не співпадають або не зареєстровані.");
+    }
+  }
+</script>
+
+</body>
+</html>
